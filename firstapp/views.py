@@ -1,17 +1,17 @@
-from django.shortcuts import render, get_object_or_404
-from .models import Category
+from django.shortcuts import render, redirect
+from .forms import ContactForm
+
+def contact_view(request):
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('success')
+    else:
+        form = ContactForm()
+
+    return render(request, 'contact.html', {'form': form})
 
 
-def category_list(request):
-    categories = Category.objects.all()
-    return render(request, 'category_list.html', {'categories': categories})
-
-
-def category_products(request, pk):
-    category = get_object_or_404(Category, pk=pk)
-    products = category.products.all()
-
-    return render(request, 'category_products.html', {
-        'category': category,
-        'products': products
-    })
+def success_view(request):
+    return render(request, 'success.html')
